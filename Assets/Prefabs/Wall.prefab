@@ -648,6 +648,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4025145514426036106}
   - component: {fileID: 7040540049553582195}
+  - component: {fileID: 2032722209}
   m_Layer: 0
   m_Name: Wall
   m_TagString: Wall
@@ -710,6 +711,26 @@ MonoBehaviour:
     i15: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
+--- !u!114 &2032722209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8389021770950921990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50759d63dc7dbb84abb3dc9c4620c9f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshRenderer: {fileID: 7718390322090540570}
+  lights:
+  - {fileID: 7911531352477667772}
+  - {fileID: 7556434983497006370}
+  - {fileID: 3692795207929751537}
+  - {fileID: 4364076861886081436}
+  - {fileID: 4645683068717772308}
+  - {fileID: 8275442781302989369}
 --- !u!1001 &1905890255
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -802,6 +823,12 @@ PrefabInstance:
 --- !u!4 &5006512736658536661 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 153f395f535af51458186869742be1fb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1905890255}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7718390322090540570 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -1504981713932161579, guid: 153f395f535af51458186869742be1fb,
     type: 3}
   m_PrefabInstance: {fileID: 1905890255}
   m_PrefabAsset: {fileID: 0}

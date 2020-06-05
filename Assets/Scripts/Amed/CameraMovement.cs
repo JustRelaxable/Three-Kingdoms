@@ -22,7 +22,7 @@ public class CameraMovement : MonoBehaviour
     void Start()
     {
         zoomStartPos = transform.position;
-        furtherPosCamAngle = new Vector3(90,0,0);
+        furtherPosCamAngle = new Vector3(80,0,0);
         closePosCamAngle = new Vector3(45, 0, 0);
     }
 
@@ -65,7 +65,7 @@ public class CameraMovement : MonoBehaviour
                 //transform.eulerAngles = Vector3.Lerp(transform.eulerAngles, furtherPosCamAngle, zoomOutFactor);
                 float xAxis = Mathf.Lerp(transform.eulerAngles.x, furtherPosCamAngle.x, zoomOutFactor);
                 transform.eulerAngles = new Vector3(xAxis, transform.eulerAngles.y, transform.eulerAngles.z);
-                Debug.Log(xAxis);
+                //Debug.Log(xAxis);
             }
 
             else
@@ -98,6 +98,7 @@ public class CameraMovement : MonoBehaviour
             if (vertical != 0)
             {
                 Vector3 forwardVector = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
+                Debug.Log(Vector3.Dot(cameraRigTransform.forward,transform.forward));
                 cameraRigTransform.position += forwardVector * vertical * Time.deltaTime * cameraWASDspeed;
             }
         }
@@ -114,11 +115,11 @@ public class CameraMovement : MonoBehaviour
         float percentage = Screen.width * SCREEN_WIDTH_PERCENTAGE;
         if(mousePosition.x > Screen.width - percentage)
         {
-            transform.Rotate(Vector3.up, 1f, Space.World);
+            transform.parent.Rotate(Vector3.up, 1f, Space.World);
         }
         else if(mousePosition.x < percentage)
         {
-            transform.Rotate(Vector3.up, -1f, Space.World);
+            transform.parent.Rotate(Vector3.up, -1f, Space.World);
         }
     }
 }

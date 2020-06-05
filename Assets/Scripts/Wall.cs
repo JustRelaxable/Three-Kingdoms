@@ -4,14 +4,10 @@ using UnityEngine;
 
 public class Wall : MonoBehaviour,IPlaceable
 {
-    private GameObject player;
-    private GameManager gameManager;
-
+    public MeshRenderer meshRenderer;
+    public Light[] lights;
     private void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();
-        player = gameManager.currentPlayer;
-
     }
 
     private void Start()

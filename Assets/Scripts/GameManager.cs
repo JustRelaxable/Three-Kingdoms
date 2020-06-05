@@ -17,7 +17,7 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         turnConnectionID = uint.MinValue;
-        StartGameSession();
+        //StartGameSession();
     }
 
     public void RegisterPlayer(GameObject player)
@@ -37,7 +37,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public GameObject GetPlayerFromConnectionID(uint connectionID)
+    public GameObject GetPlayerGOFromConnectionID(uint connectionID)
     {
         for (int i = 0; i < allPlayers.Length; i++)
         {
@@ -49,29 +49,37 @@ public class GameManager : NetworkBehaviour
         return null;
     }
 
-    private void StartGameSession()
+    public Player GetPlayerFromConnectionID(uint connectionID)
     {
-        RpcThrowDiesForPlayers();
-        RpcPutAndSelectRandomConnectionID();
+        Player[] players = GameObject.FindObjectsOfType<Player>();
+        for (int i = 0; i < players.Length; i++)
+        {
+            NetworkIdentity networkIdentity = players[i].GetComponent<NetworkIdentity>();
+            if (networkIdentity.netId.Value == connectionID && networkIdentity.isClient)
+            {
+                return players[i];
+            }
+        }
+        return null;
     }
 
-    [ClientRpc]
-    private void RpcThrowDiesForPlayers()
+    private void StartGameSession()
+    {
+        ThrowDiesForPlayers();
+        PutAndSelectRandomConnectionID();
+        AssignPlayerColors();
+    }
+
+    private void ThrowDiesForPlayers()
     {
         for (int i = 0; i < allPlayers.Length; i++)
         {
             allPlayers[i].GetComponent<Player>().RollDie();
             Debug.Log(allPlayers[i].GetComponent<Player>().dieAmount);
         }
-
-        for (int i = 0; i < allPlayers.Length; i++)
-        {
-
-        }
     }
 
-    [ClientRpc]
-    public void RpcPutAndSelectRandomConnectionID()
+    public void PutAndSelectRandomConnectionID()
     {
         for (int i = 0; i < allPlayers.Length; i++)
         {
@@ -86,5 +94,19 @@ public class GameManager : NetworkBehaviour
         int index = connectionIDs.FindIndex(c => c == connectionID);
         index = index == 2 ? 0 : index + 1;
         turnConnectionID = connectionIDs[index];
+    }
+
+    public void AssignPlayerColors()
+    {
+        for (int i = 0; i < connectionIDs.Count; i++)
+        {
+            AssignColorToPlayer(connectionIDs[i], i);
+        }
+    }
+
+    public void AssignColorToPlayer(uint connectionID,int colorIndex)
+    {
+        Player player = GetPlayerFromConnectionID(connectionID);
+        player.RpcAssignColor(colorIndex);
     }
 }

@@ -8,7 +8,8 @@ public class Player : NetworkBehaviour
 {
     GameManager gameManager;
     NetworkIdentity networkIdentity;
-
+    public Material playerColor;
+    public Material[] playerMaterials;
 
     public int dieAmount { get; private set; } = -1;
 
@@ -43,6 +44,14 @@ public class Player : NetworkBehaviour
         int random1 = Random.Range(1, 4);
         int random2 = Random.Range(1, 4);
         dieAmount = (random1 + random2);
+        RpcUpdateDieOnClients(dieAmount);
+    }
+
+    [ClientRpc]
+    public void RpcUpdateDieOnClients(int dieAmount)
+    {
+        this.dieAmount = dieAmount;
+        Debug.Log(dieAmount);
     }
 
     public void DecreaseDie()
@@ -52,5 +61,16 @@ public class Player : NetworkBehaviour
         {
             gameManager.CmdTurnFinished(networkIdentity.netId.Value);
         }
+    }
+
+    [ClientRpc]
+    public void RpcAssignColor(int colorIndex)
+    {
+        playerColor = playerMaterials[colorIndex];
+    }
+
+    public Material GetColor()
+    {
+        return playerColor;
     }
 }

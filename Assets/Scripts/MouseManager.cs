@@ -88,8 +88,25 @@ public class MouseManager : NetworkBehaviour
         {
             player.DecreaseDie();
             GameObject spawnedObject = Instantiate(wall, pos, rot);
-            NetworkServer.SpawnWithClientAuthority(spawnedObject,connectionToClient);
+            AssignWallColor(spawnedObject);
+            NetworkServer.SpawnWithClientAuthority(spawnedObject, connectionToClient);
+            RpcAssignColorOnClients(spawnedObject);
         }
+    }
+
+    private void AssignWallColor(GameObject spawnedObject)
+    {
+        Wall spawnedWall = spawnedObject.GetComponent<Wall>();
+        spawnedWall.meshRenderer.material = player.GetColor();
+        for (int i = 0; i < spawnedWall.lights.Length; i++)
+        {
+            spawnedWall.lights[i].color = player.GetColor().color;
+        }
+    }
+    [ClientRpc]
+    public void RpcAssignColorOnClients(GameObject GO)
+    {
+        AssignWallColor(GO);
     }
 
     [Command]

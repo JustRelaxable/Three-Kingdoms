@@ -17,6 +17,11 @@ public class PlayerNetworkManager : NetworkBehaviour
             {
                 componentsToDisable[i].enabled = false;
             }
+            
+        }
+        if (isServer)
+        {
+            RegisterPlayer();
         }
     }
 
@@ -28,7 +33,7 @@ public class PlayerNetworkManager : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        RegisterPlayer();
+        //RegisterPlayer();
         SetPlayerSpawnPoint();
     }
 
