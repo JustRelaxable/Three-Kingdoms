@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -53,7 +54,7 @@ public class MouseManager : NetworkBehaviour
                     isPlaceable = true;
                     currentCellManager = hitInfo.collider.gameObject.GetComponent<CellManager>();
                     var tuple = currentCellManager.PlaceWallInfo();
-                    CmdPlaceWall(isPlaceable,tuple.Item1,tuple.Item2);
+                    CmdPlaceWall(isPlaceable,tuple.Item1,tuple.Item2,tuple.Item3,tuple.Item4);
                 }
 
 
@@ -78,7 +79,7 @@ public class MouseManager : NetworkBehaviour
     }
 
     [Command]
-    public void CmdPlaceWall(bool isPlaceable,Vector3 pos,Quaternion rot)
+    public void CmdPlaceWall(bool isPlaceable,Vector3 pos,Quaternion rot,int indicatorPosIndex,CellManager.GridPosition gridPosition)
     {
         if(networkIdentity.netId.Value != gameManager.turnConnectionID)
         {
@@ -91,6 +92,70 @@ public class MouseManager : NetworkBehaviour
             AssignWallColor(spawnedObject);
             NetworkServer.SpawnWithClientAuthority(spawnedObject, connectionToClient);
             RpcAssignColorOnClients(spawnedObject);
+            RpcAssignObjectToEdge(indicatorPosIndex, gridPosition,spawnedObject);
+        }
+    }
+    [ClientRpc]
+    private void RpcAssignObjectToEdge(int indicatorPosIndex, CellManager.GridPosition gridPosition,GameObject spawnedObject)
+    {
+        CellManager cell = CellManager.CellFromGridPosition(gridPosition);
+        if(cell != null)
+        {
+            cell.edges[indicatorPosIndex].gameObject = spawnedObject;
+
+            switch (indicatorPosIndex)
+            {
+                case 0:
+                    gridPosition.gridX -= 1;
+                    if (true) 
+                    {
+                        CellManager c = CellManager.CellFromGridPosition(gridPosition);
+                        if(c == null)
+                        {
+                            return;
+                        }
+                        c.edges[1].gameObject = spawnedObject; 
+                    }
+                        break;
+                case 1:
+                    gridPosition.gridX += 1;
+                    if (true)
+                    {
+                        CellManager c = CellManager.CellFromGridPosition(gridPosition);
+                        if (c == null)
+                        {
+                            return;
+                        }
+                        c.edges[0].gameObject = spawnedObject;
+                    }
+                    break;
+                case 2:
+                    gridPosition.gridZ += 1;
+                    if (true)
+                    {
+                        CellManager c = CellManager.CellFromGridPosition(gridPosition);
+                        if (c == null)
+                        {
+                            return;
+                        }
+                        c.edges[3].gameObject = spawnedObject;
+                    }
+                    break;
+                case 3:
+                    gridPosition.gridZ -= 1;
+                    if (true)
+                    {
+                        CellManager c = CellManager.CellFromGridPosition(gridPosition);
+                        if (c == null)
+                        {
+                            return;
+                        }
+                        c.edges[2].gameObject = spawnedObject;
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

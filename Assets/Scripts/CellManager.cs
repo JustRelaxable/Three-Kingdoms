@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine;
 using System;
+using JetBrains.Annotations;
 
 public class CellManager : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class CellManager : MonoBehaviour
     private int indicatorPosIndex = -1;
     public EdgeAvailability edgeAvailability;
     public GridPosition gridPosition;
+    public EdgeObjectPlace[] edges;
+    public static List<CellManager> allCells;
 
     private void Awake()
     {
@@ -32,16 +35,50 @@ public class CellManager : MonoBehaviour
         cellBound = grid.GetBoundsLocal(cellPosition);
         edgeCenterBounds = new EdgeCenterBounds(cellBound);
         indicator = GameObject.FindGameObjectWithTag("Indicator");
+        if(allCells != null)
+        {
+            allCells.Add(this);
+        }
+        else
+        {
+            allCells = new List<CellManager>();
+            allCells.Add(this);
+        }
     }
 
     void Start()
     {
-        
+        /*
+        GridPosition g1 = new GridPosition();
+        g1.gridX = 1;
+        g1.gridZ = 1;
+
+        GridPosition g2 = new GridPosition();
+        g2.gridX = 1;
+        g2.gridZ = 1;
+
+        if(g1 == g2)
+        {
+            Debug.Log(true);
+        }
+        */
     }
 
     void Update()
     {
         
+    }
+
+    public static CellManager CellFromGridPosition(GridPosition pos)
+    {
+        for (int i = 0; i < allCells.Count; i++)
+        {
+            if (allCells[i].gridPosition == pos)
+            {
+                return allCells[i];
+            }
+        }
+        return null;
     }
 
     public Tuple<Vector3,Quaternion> PlaceCastle() // Amed wrote
@@ -103,17 +140,17 @@ public class CellManager : MonoBehaviour
 
     }
 
-    public Tuple<Vector3,Quaternion> PlaceWallInfo()
+    public Tuple<Vector3,Quaternion,int,GridPosition> PlaceWallInfo()
     {
         if (indicatorPosIndex == 0 || indicatorPosIndex == 1)
         {
-            Tuple<Vector3, Quaternion> tuple = new Tuple<Vector3, Quaternion>(indicatorPos, Quaternion.Euler(0, 0, 0));
+            Tuple<Vector3, Quaternion,int,GridPosition> tuple = new Tuple<Vector3, Quaternion,int,GridPosition>(indicatorPos, Quaternion.Euler(0, 0, 0),indicatorPosIndex,gridPosition);
             ActionPointsAndDiceUI.decreaseActionPoints.Invoke();
             return tuple;
         }
         else if (indicatorPosIndex == 2 || indicatorPosIndex == 3)
         {
-            Tuple<Vector3, Quaternion> tuple = new Tuple<Vector3, Quaternion>(indicatorPos, Quaternion.Euler(0, 90, 0));
+            Tuple<Vector3, Quaternion,int,GridPosition> tuple = new Tuple<Vector3, Quaternion,int,GridPosition>(indicatorPos, Quaternion.Euler(0, 90, 0),indicatorPosIndex,gridPosition);
             ActionPointsAndDiceUI.decreaseActionPoints.Invoke();
             return tuple;
         }
@@ -207,15 +244,58 @@ public class CellManager : MonoBehaviour
     }
 
     [System.Serializable]
-    public class GridPosition
+    public class GridPosition : IComparable
     {
         public int gridX;
         public int gridZ;
+
+        public static bool operator ==(GridPosition g1,GridPosition g2)
+        {
+            if (g1.gridX == g2.gridX && g1.gridZ == g2.gridZ)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public static bool operator !=(GridPosition g1, GridPosition g2)
+        {
+            if (g1.gridX == g2.gridX && g1.gridZ == g2.gridZ)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
         public void SetGrid(int x,int z)
         {
             gridX = x;
             gridZ = z;
         }
+
+        public int CompareTo(object obj)
+        {
+            GridPosition pos = obj as GridPosition;
+            if (pos.gridX == this.gridX && pos.gridZ == this.gridZ)
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+    }
+
+    [System.Serializable]
+    public class EdgeObjectPlace
+    {
+        public int edgeIndex;
+        public GameObject gameObject;
     }
 }

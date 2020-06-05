@@ -98,7 +98,6 @@ public class CameraMovement : MonoBehaviour
             if (vertical != 0)
             {
                 Vector3 forwardVector = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
-                Debug.Log(Vector3.Dot(cameraRigTransform.forward,transform.forward));
                 cameraRigTransform.position += forwardVector * vertical * Time.deltaTime * cameraWASDspeed;
             }
         }

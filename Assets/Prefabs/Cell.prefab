@@ -206,3 +206,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c8c5cb3d2a414c4585e97e832119350, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridPosition:
+    gridX: 0
+    gridZ: 0
+  edges:
+  - edgeIndex: 0
+    gameObject: {fileID: 0}
+  - edgeIndex: 1
+    gameObject: {fileID: 0}
+  - edgeIndex: 2
+    gameObject: {fileID: 0}
+  - edgeIndex: 3
+    gameObject: {fileID: 0}
