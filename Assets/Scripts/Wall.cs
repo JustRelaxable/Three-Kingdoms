@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wall : MonoBehaviour,IPlaceable
+public class Wall : TeamPlaceable,IPlaceable
 {
     public MeshRenderer meshRenderer;
     public Light[] lights;

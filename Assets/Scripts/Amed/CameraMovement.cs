@@ -22,7 +22,7 @@ public class CameraMovement : MonoBehaviour
     void Start()
     {
         zoomStartPos = transform.position;
-        furtherPosCamAngle = new Vector3(80,0,0);
+        furtherPosCamAngle = new Vector3(87,0,0);
         closePosCamAngle = new Vector3(45, 0, 0);
     }
 
@@ -114,11 +114,12 @@ public class CameraMovement : MonoBehaviour
         float percentage = Screen.width * SCREEN_WIDTH_PERCENTAGE;
         if(mousePosition.x > Screen.width - percentage)
         {
-            transform.parent.Rotate(Vector3.up, 1f, Space.World);
+            //transform.Rotate(Vector3.up, 1f, Space.World);
+            transform.parent.RotateAround(transform.position,Vector3.up, 1f);
         }
         else if(mousePosition.x < percentage)
         {
-            transform.parent.Rotate(Vector3.up, -1f, Space.World);
+            transform.parent.RotateAround(transform.position, Vector3.up, -1f);
         }
     }
 }

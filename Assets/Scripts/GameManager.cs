@@ -108,5 +108,6 @@ public class GameManager : NetworkBehaviour
     {
         Player player = GetPlayerFromConnectionID(connectionID);
         player.RpcAssignColor(colorIndex);
+        player.RpcPlayerAssignTeam(colorIndex);
     }
 }

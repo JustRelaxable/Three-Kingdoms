@@ -4,6 +4,7 @@ using UnityEngine.Networking;
 using UnityEngine;
 using System;
 using JetBrains.Annotations;
+using System.Runtime.InteropServices;
 
 public class CellManager : MonoBehaviour
 {
@@ -81,6 +82,21 @@ public class CellManager : MonoBehaviour
         return null;
     }
 
+    public static CellManager CellFromGridPosition(int gridX,int gridZ)
+    {
+        GridPosition pos = new GridPosition();
+        pos.gridX = gridX;
+        pos.gridZ = gridZ;
+        for (int i = 0; i < allCells.Count; i++)
+        {
+            if (allCells[i].gridPosition == pos)
+            {
+                return allCells[i];
+            }
+        }
+        return null;
+    }
+
     public Tuple<Vector3,Quaternion> PlaceCastle() // Amed wrote
     {
         Vector3 castlePos;
@@ -117,6 +133,24 @@ public class CellManager : MonoBehaviour
         indicator.transform.position = transform.TransformPoint(edgeCenterBounds.edges[distanceTuple.Item2]);
         indicatorPos = indicator.transform.position;
         indicatorPosIndex = distanceTuple.Item2;
+    }
+
+    public int FindNearestCenterEdgeForCastle(Vector3 point)
+    {
+        point = transform.InverseTransformPoint(point);
+        float nearestEdgeDistance = (point - edgeCenterBounds.edges[0]).magnitude;
+        Tuple<float, int> distanceTuple = new Tuple<float, int>(nearestEdgeDistance, 0);
+        for (int i = 1; i < edgeCenterBounds.edges.Length; i++)
+        {
+            if (nearestEdgeDistance > (point - edgeCenterBounds.edges[i]).magnitude)
+            {
+                distanceTuple = new Tuple<float, int>(0f, i);
+                nearestEdgeDistance = (point - edgeCenterBounds.edges[i]).magnitude;
+            }
+        }
+        //indicator.transform.position = transform.TransformPoint(edgeCenterBounds.edges[distanceTuple.Item2]);
+        //indicatorPos = indicator.transform.position;
+        return distanceTuple.Item2;
     }
 
     public GameObject PlaceWall()
@@ -163,6 +197,327 @@ public class CellManager : MonoBehaviour
     public static void ResetIndicatorPos()
     {
         indicator.transform.position = new Vector3(0, 1000, 0);
+    }
+
+    public bool IsEdgePlaceable(int edgeIndex,PlayerTeam team,GridPosition gridPos)
+    {
+        CellManager cellManager = CellFromGridPosition(gridPos);
+        if(cellManager.edges[edgeIndex].gameObject != null) 
+        {
+            return false;
+        }
+
+        CellManager up = CellFromGridPosition(gridPos.gridX, gridPos.gridZ + 1);
+        CellManager down = CellFromGridPosition(gridPos.gridX, gridPos.gridZ - 1);
+        CellManager left = CellFromGridPosition(gridPos.gridX - 1, gridPos.gridZ);
+        CellManager right = CellFromGridPosition(gridPos.gridX + 1, gridPos.gridZ);
+        CellManager upLeft = CellFromGridPosition(gridPos.gridX - 1, gridPos.gridZ + 1);
+        CellManager upRight = CellFromGridPosition(gridPos.gridX + 1, gridPos.gridZ + 1);
+        CellManager downLeft = CellFromGridPosition(gridPos.gridX - 1, gridPos.gridZ - 1);
+        CellManager downRight = CellFromGridPosition(gridPos.gridX + 1, gridPos.gridZ - 1);
+
+        CellManager[] edgesToCheck0 = new CellManager[] {up,upLeft,left,downLeft,down };
+        CellManager[] edgesToCheck1 = new CellManager[] { up, upRight, right, downRight, down };
+        CellManager[] edgesToCheck2 = new CellManager[] { up, upLeft, left, upRight, right };
+        CellManager[] edgesToCheck3 = new CellManager[] { down, downLeft, left, downRight, right };
+        int times = 0;
+
+        switch (edgeIndex)
+        {
+            case 0:
+                for (int i = 0; i < edgesToCheck0.Length; i++)
+                {
+                    int edgeIndex1 = -1;
+                    int edgeIndex2 = -1;
+
+                    if(edgesToCheck0[i] == up && up != null)
+                    {
+                        edgeIndex1 = 0;
+                        edgeIndex2 = 3;
+                    }
+                    if (edgesToCheck0[i] == upLeft && upLeft != null)
+                    {
+                        edgeIndex1 = 1;
+                        edgeIndex2 = 3;
+                    }
+                    if (edgesToCheck0[i] == left && left != null)
+                    {
+                        edgeIndex1 = 2;
+                        edgeIndex2 = 3;
+                    }
+                    if (edgesToCheck0[i] == downLeft && downLeft != null)
+                    {
+                        edgeIndex1 = 1;
+                        edgeIndex2 = 2;
+                    }
+                    if (edgesToCheck0[i] == down && down != null)
+                    {
+                        edgeIndex1 = 0;
+                        edgeIndex2 = 2;
+                    }
+
+                    TeamPlaceable tp1;
+                    if (edgesToCheck0[i].edges[edgeIndex1].gameObject == null)
+                    {
+                        tp1 = null;
+                    }
+                    else
+                    {
+                        tp1 = edgesToCheck0[i].edges[edgeIndex1].gameObject.GetComponent<TeamPlaceable>();
+                    }
+
+                    TeamPlaceable tp2;
+                    if (edgesToCheck0[i].edges[edgeIndex2].gameObject == null)
+                    {
+                        tp2 = null;
+                    }
+                    else
+                    {
+                        tp2 = edgesToCheck0[i].edges[edgeIndex2].gameObject.GetComponent<TeamPlaceable>();
+                    }
+
+                    if (tp1 != null) 
+                    { 
+                        if(tp1.team == team)
+                        {
+                            times++;
+                        }
+                    }
+                    if (tp2 != null) 
+                    {
+                        if (tp2.team == team)
+                        {
+                            times++;
+                        }
+                    }
+                }
+                if (times == 2)
+                {
+                    return true;
+                }
+                return false;
+            case 1:
+                for (int i = 0; i < edgesToCheck1.Length; i++)
+                {
+                    int edgeIndex1 = -1;
+                    int edgeIndex2 = -1;
+
+                    if (edgesToCheck1[i] == up && up != null)
+                    {
+                        edgeIndex1 = 1;
+                        edgeIndex2 = 3;
+                    }
+                    if (edgesToCheck1[i] == upRight && upRight != null)
+                    {
+                        edgeIndex1 = 0;
+                        edgeIndex2 = 3;
+                    }
+                    if (edgesToCheck1[i] == right && right != null)
+                    {
+                        edgeIndex1 = 2;
+                        edgeIndex2 = 3;
+                    }
+                    if (edgesToCheck1[i] == downRight && downRight != null)
+                    {
+                        edgeIndex1 = 0;
+                        edgeIndex2 = 2;
+                    }
+                    if (edgesToCheck1[i] == down && down != null)
+                    {
+                        edgeIndex1 = 1;
+                        edgeIndex2 = 2;
+                    }
+
+                    TeamPlaceable tp1;
+                    if (edgesToCheck1[i].edges[edgeIndex1].gameObject == null)
+                    {
+                        tp1 = null;
+                    }
+                    else
+                    {
+                        tp1 = edgesToCheck1[i].edges[edgeIndex1].gameObject.GetComponent<TeamPlaceable>();
+                    }
+
+                    TeamPlaceable tp2;
+                    if (edgesToCheck1[i].edges[edgeIndex2].gameObject == null)
+                    {
+                        tp2 = null;
+                    }
+                    else
+                    {
+                        tp2 = edgesToCheck1[i].edges[edgeIndex2].gameObject.GetComponent<TeamPlaceable>();
+                    }
+
+                    if (tp1 != null)
+                    {
+                        if (tp1.team == team)
+                        {
+                            times++;
+                        }
+                    }
+                    if (tp2 != null)
+                    {
+                        if (tp2.team == team)
+                        {
+                            times++;
+                        }
+                    }
+                }
+                if (times == 2)
+                {
+                    return true;
+                }
+                return false;
+            case 2:
+                for (int i = 0; i < edgesToCheck2.Length; i++)
+                {
+                    int edgeIndex1 = -1;
+                    int edgeIndex2 = -1;
+
+                    if (edgesToCheck2[i] == up && up != null)
+                    {
+                        edgeIndex1 = 0;
+                        edgeIndex2 = 1;
+                    }
+                    if (edgesToCheck2[i] == upLeft && upLeft != null)
+                    {
+                        edgeIndex1 = 1;
+                        edgeIndex2 = 3;
+                    }
+                    if (edgesToCheck2[i] == left && left != null)
+                    {
+                        edgeIndex1 = 1;
+                        edgeIndex2 = 2;
+                    }
+                    if (edgesToCheck2[i] == upRight && upRight != null)
+                    {
+                        edgeIndex1 = 0;
+                        edgeIndex2 = 3;
+                    }
+                    if (edgesToCheck2[i] == right && right != null)
+                    {
+                        edgeIndex1 = 0;
+                        edgeIndex2 = 2;
+                    }
+
+                    TeamPlaceable tp1;
+                    if (edgesToCheck2[i].edges[edgeIndex1].gameObject == null)
+                    {
+                        tp1 = null;
+                    }
+                    else
+                    {
+                        tp1 = edgesToCheck2[i].edges[edgeIndex1].gameObject.GetComponent<TeamPlaceable>();
+                    }
+
+                    TeamPlaceable tp2;
+                    if (edgesToCheck2[i].edges[edgeIndex2].gameObject == null)
+                    {
+                        tp2 = null;
+                    }
+                    else
+                    {
+                        tp2 = edgesToCheck2[i].edges[edgeIndex2].gameObject.GetComponent<TeamPlaceable>();
+                    }
+
+                    if (tp1 != null)
+                    {
+                        if (tp1.team == team)
+                        {
+                            times++;
+                        }
+                    }
+                    if (tp2 != null)
+                    {
+                        if (tp2.team == team)
+                        {
+                            times++;
+                        }
+                    }
+                }
+                if (times == 2)
+                {
+                    return true;
+                }
+                return false;
+            case 3:
+                {
+                    for (int i = 0; i < edgesToCheck3.Length; i++)
+                    {
+                        int edgeIndex1 = -1;
+                        int edgeIndex2 = -1;
+
+                        if (edgesToCheck3[i] == down && down != null)
+                        {
+                            edgeIndex1 = 0;
+                            edgeIndex2 = 1;
+                        }
+                        if (edgesToCheck3[i] == downLeft && downLeft != null)
+                        {
+                            edgeIndex1 = 1;
+                            edgeIndex2 = 2;
+                        }
+                        if (edgesToCheck3[i] == left && left != null)
+                        {
+                            edgeIndex1 = 1;
+                            edgeIndex2 = 3;
+                        }
+                        if (edgesToCheck3[i] == downRight && downRight != null)
+                        {
+                            edgeIndex1 = 0;
+                            edgeIndex2 = 2;
+                        }
+                        if (edgesToCheck3[i] == right && right != null)
+                        {
+                            edgeIndex1 = 0;
+                            edgeIndex2 = 3;
+                        }
+
+                        TeamPlaceable tp1;
+                        if (edgesToCheck3[i].edges[edgeIndex1].gameObject == null)
+                        {
+                            tp1 = null;
+                        }
+                        else
+                        {
+                            tp1 = edgesToCheck3[i].edges[edgeIndex1].gameObject.GetComponent<TeamPlaceable>();
+                        }
+
+                        TeamPlaceable tp2;
+                        if (edgesToCheck3[i].edges[edgeIndex2].gameObject == null)
+                        {
+                            tp2 = null;
+                        }
+                        else
+                        {
+                            tp2 = edgesToCheck3[i].edges[edgeIndex2].gameObject.GetComponent<TeamPlaceable>();
+                        }
+
+                        if (tp1 != null)
+                        {
+                            if (tp1.team == team)
+                            {
+                                times++;
+                            }
+                        }
+                        if (tp2 != null)
+                        {
+                            if (tp2.team == team)
+                            {
+                                times++;
+                            }
+                        }
+                    }
+
+                    if (times == 2)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            default:
+                return false;
+        }
     }
 
     public class EdgeCenterBounds

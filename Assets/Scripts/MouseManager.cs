@@ -54,6 +54,8 @@ public class MouseManager : NetworkBehaviour
                     isPlaceable = true;
                     currentCellManager = hitInfo.collider.gameObject.GetComponent<CellManager>();
                     var tuple = currentCellManager.PlaceWallInfo();
+                    isPlaceable = currentCellManager.IsEdgePlaceable(tuple.Item3, player.team, tuple.Item4);
+                    Debug.Log(isPlaceable);
                     CmdPlaceWall(isPlaceable,tuple.Item1,tuple.Item2,tuple.Item3,tuple.Item4);
                 }
 
@@ -90,9 +92,11 @@ public class MouseManager : NetworkBehaviour
             player.DecreaseDie();
             GameObject spawnedObject = Instantiate(wall, pos, rot);
             AssignWallColor(spawnedObject);
+            AssignTeam(spawnedObject);
             NetworkServer.SpawnWithClientAuthority(spawnedObject, connectionToClient);
             RpcAssignColorOnClients(spawnedObject);
             RpcAssignObjectToEdge(indicatorPosIndex, gridPosition,spawnedObject);
+            RpcAssignTeam(spawnedObject);
         }
     }
     [ClientRpc]
@@ -179,5 +183,15 @@ public class MouseManager : NetworkBehaviour
     {
         GameObject spawnedObject = Instantiate(castle, pos, rot);
         NetworkServer.SpawnWithClientAuthority(spawnedObject, connectionToClient);
+    }
+
+    public void AssignTeam(GameObject GO)
+    {
+        GO.GetComponent<TeamPlaceable>().team = player.team;
+    }
+    [ClientRpc]
+    public void RpcAssignTeam(GameObject GO)
+    {
+        GO.GetComponent<TeamPlaceable>().team = player.team;
     }
 }

@@ -10,6 +10,7 @@ public class Player : NetworkBehaviour
     NetworkIdentity networkIdentity;
     public Material playerColor;
     public Material[] playerMaterials;
+    public PlayerTeam team;
 
     public int dieAmount { get; private set; } = -1;
 
@@ -67,6 +68,25 @@ public class Player : NetworkBehaviour
     public void RpcAssignColor(int colorIndex)
     {
         playerColor = playerMaterials[colorIndex];
+    }
+
+    [ClientRpc]
+    public void RpcPlayerAssignTeam(int colorIndex)
+    {
+        switch (colorIndex)
+        {
+            case 0:
+                team = PlayerTeam.Blue;
+                break;
+            case 1:
+                team = PlayerTeam.Green;
+                break;
+            case 2:
+                team = PlayerTeam.Red;
+                break;
+            default:
+                break;
+        }
     }
 
     public Material GetColor()
