@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class TileManager : MonoBehaviour
 {
     List<Transform> childObjectTransforms;
@@ -14,6 +13,7 @@ public class TileManager : MonoBehaviour
     public Material grass;
     public Material rock;
     public Material sand;
+    bool mapCreated = false;
 
     private void Awake()
     {
@@ -30,7 +30,6 @@ public class TileManager : MonoBehaviour
     
     void Update()
     {
-        
     }
 
     private void CreateCells()
