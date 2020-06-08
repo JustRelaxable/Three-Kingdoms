@@ -93,6 +93,8 @@ public class GameManager : NetworkBehaviour
     {
         int index = connectionIDs.FindIndex(c => c == connectionID);
         index = index == 2 ? 0 : index + 1;
+        if(index == 0)
+            ThrowDiesForPlayers();
         turnConnectionID = connectionIDs[index];
     }
 

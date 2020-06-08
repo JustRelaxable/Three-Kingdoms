@@ -51,12 +51,18 @@ public class MouseManager : NetworkBehaviour
 
                 if (hitInfo.collider.gameObject.CompareTag("Cell") && Input.GetMouseButtonDown(0) && CastleKey<=0 ) // Amed Changed
                 {
-                    isPlaceable = true;
+                    isPlaceable = player.IsFoodResourceGreaterThan0();
                     currentCellManager = hitInfo.collider.gameObject.GetComponent<CellManager>();
                     var tuple = currentCellManager.PlaceWallInfo();
-                    isPlaceable = currentCellManager.IsEdgePlaceable(tuple.Item3, player.team, tuple.Item4);
+                    bool isPlaceable2 = currentCellManager.IsEdgePlaceable(tuple.Item3, player.team, tuple.Item4);
+
+                    if(isPlaceable2 && isPlaceable)
+                    {
+                        player.PlaceWall();
+                    }
+
                     Debug.Log(isPlaceable);
-                    CmdPlaceWall(isPlaceable,tuple.Item1,tuple.Item2,tuple.Item3,tuple.Item4);
+                    CmdPlaceWall((isPlaceable2 && isPlaceable),tuple.Item1,tuple.Item2,tuple.Item3,tuple.Item4);
                 }
 
 
@@ -89,7 +95,7 @@ public class MouseManager : NetworkBehaviour
         }
         if (isPlaceable)
         {
-            player.DecreaseDie();
+            player.PlaceWall();
             GameObject spawnedObject = Instantiate(wall, pos, rot);
             AssignWallColor(spawnedObject);
             AssignTeam(spawnedObject);
