@@ -11,12 +11,14 @@ public class Player : NetworkBehaviour
     public Material playerColor;
     public Material[] playerMaterials;
     public PlayerTeam team;
+    Market market;
 
     public int dieAmount { get; private set; } = -1;
 
-    int foodResources = 0;
-    int stoneResources = 0;
-    int sulphurResources = 0;
+    int foodResources = 20;
+    int stoneResources = 20;
+    int sulphurResources = 10;
+    int currency = 10;
 
     int foodMine = 0;
     int stoneMine = 0;
@@ -26,6 +28,7 @@ public class Player : NetworkBehaviour
     {
         gameManager = GameObject.FindObjectOfType<GameManager>();
         networkIdentity = GetComponent<NetworkIdentity>();
+        market = GameObject.FindObjectOfType<Market>();
     }
 
     public void OnRoundStart()
@@ -64,6 +67,24 @@ public class Player : NetworkBehaviour
         }
     }
 
+    public void PlaceWall()
+    {
+        if(foodResources < 0)
+        {
+            DecreaseDie();
+            this.foodResources -= 1;
+        }
+        else
+        {
+
+        }
+    }
+
+    public bool IsFoodResourceGreaterThan0()
+    {
+        return (this.foodResources > 0);
+    }
+
     [ClientRpc]
     public void RpcAssignColor(int colorIndex)
     {
@@ -93,4 +114,69 @@ public class Player : NetworkBehaviour
     {
         return playerColor;
     }
+
+    public void BuyResource(MarketResourceType resource)
+    {
+        if(currency > 0)
+        {
+            switch (resource)
+            {
+                case MarketResourceType.Food:
+                    currency -= 1;
+                    foodResources += 1;
+                    market.CmdDecreaseMarket(MarketResourceType.Food);
+                    break;
+                case MarketResourceType.Stone:
+                    currency -= 1;
+                    stoneResources += 1;
+                    market.CmdDecreaseMarket(MarketResourceType.Stone);
+                    break;
+                case MarketResourceType.Sulphur:
+                    currency -= 1;
+                    sulphurResources += 1;
+                    market.CmdDecreaseMarket(MarketResourceType.Sulphur);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public void SellResource(MarketResourceType resource)
+    {
+        switch (resource)
+        {
+            case MarketResourceType.Food:
+                if(foodResources > 0)
+                {
+                    currency += 1;
+                    foodResources -= 1;
+                    market.CmdIncreaseMarket(MarketResourceType.Food);
+                }
+                break;
+            case MarketResourceType.Stone:
+                if (stoneResources > 0)
+                {
+                    currency += 1;
+                    stoneResources -= 1;
+                    market.CmdIncreaseMarket(MarketResourceType.Stone);
+                }
+                break;
+            case MarketResourceType.Sulphur:
+                if (sulphurResources > 0)
+                {
+                    currency += 1;
+                    sulphurResources -= 1;
+                    market.CmdIncreaseMarket(MarketResourceType.Sulphur);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+public enum MarketResourceType
+{
+    Food,Stone,Sulphur
 }

@@ -216,16 +216,16 @@ public class CellManager : MonoBehaviour
         CellManager downLeft = CellFromGridPosition(gridPos.gridX - 1, gridPos.gridZ - 1);
         CellManager downRight = CellFromGridPosition(gridPos.gridX + 1, gridPos.gridZ - 1);
 
-        CellManager[] edgesToCheck0 = new CellManager[] {up,upLeft,left,downLeft,down };
-        CellManager[] edgesToCheck1 = new CellManager[] { up, upRight, right, downRight, down };
-        CellManager[] edgesToCheck2 = new CellManager[] { up, upLeft, left, upRight, right };
-        CellManager[] edgesToCheck3 = new CellManager[] { down, downLeft, left, downRight, right };
+        CellManager[] edgesToCheck0 = new CellManager[] {up,upLeft,left,downLeft,down,cellManager };
+        CellManager[] edgesToCheck1 = new CellManager[] { up, upRight, right, downRight, down,cellManager };
+        CellManager[] edgesToCheck2 = new CellManager[] { up, upLeft, left, upRight, right,cellManager };
+        CellManager[] edgesToCheck3 = new CellManager[] { down, downLeft, left, downRight, right,cellManager };
         int times = 0;
 
         switch (edgeIndex)
         {
             case 0:
-                for (int i = 0; i < edgesToCheck0.Length; i++)
+                for (int i = 0; i < edgesToCheck0.Length-1; i++)
                 {
                     int edgeIndex1 = -1;
                     int edgeIndex2 = -1;
@@ -291,13 +291,34 @@ public class CellManager : MonoBehaviour
                         }
                     }
                 }
+                //Fix
+                for (int i = 0; i < 4; i++)
+                {
+                    TeamPlaceable tp1;
+                    if (edgesToCheck0[5].edges[i].gameObject == null)
+                    {
+                        tp1 = null;
+                    }
+                    else
+                    {
+                        tp1 = edgesToCheck0[5].edges[i].gameObject.GetComponent<TeamPlaceable>();
+                    }
+                    if (tp1 != null)
+                    {
+                        if (tp1.team == team)
+                        {
+                            times++;
+                        }
+                    }
+                }
+                //Fix
                 if (times == 2)
                 {
                     return true;
                 }
                 return false;
             case 1:
-                for (int i = 0; i < edgesToCheck1.Length; i++)
+                for (int i = 0; i < edgesToCheck1.Length-1; i++)
                 {
                     int edgeIndex1 = -1;
                     int edgeIndex2 = -1;
@@ -363,13 +384,36 @@ public class CellManager : MonoBehaviour
                         }
                     }
                 }
+
+                //Fix
+                for (int i = 0; i < 4; i++)
+                {
+                    TeamPlaceable tp1;
+                    if (edgesToCheck0[5].edges[i].gameObject == null)
+                    {
+                        tp1 = null;
+                    }
+                    else
+                    {
+                        tp1 = edgesToCheck0[5].edges[i].gameObject.GetComponent<TeamPlaceable>();
+                    }
+                    if (tp1 != null)
+                    {
+                        if (tp1.team == team)
+                        {
+                            times++;
+                        }
+                    }
+                }
+                //Fix
+
                 if (times == 2)
                 {
                     return true;
                 }
                 return false;
             case 2:
-                for (int i = 0; i < edgesToCheck2.Length; i++)
+                for (int i = 0; i < edgesToCheck2.Length-1; i++)
                 {
                     int edgeIndex1 = -1;
                     int edgeIndex2 = -1;
@@ -435,6 +479,29 @@ public class CellManager : MonoBehaviour
                         }
                     }
                 }
+
+                //Fix
+                for (int i = 0; i < 4; i++)
+                {
+                    TeamPlaceable tp1;
+                    if (edgesToCheck0[5].edges[i].gameObject == null)
+                    {
+                        tp1 = null;
+                    }
+                    else
+                    {
+                        tp1 = edgesToCheck0[5].edges[i].gameObject.GetComponent<TeamPlaceable>();
+                    }
+                    if (tp1 != null)
+                    {
+                        if (tp1.team == team)
+                        {
+                            times++;
+                        }
+                    }
+                }
+                //Fix
+
                 if (times == 2)
                 {
                     return true;
@@ -442,7 +509,7 @@ public class CellManager : MonoBehaviour
                 return false;
             case 3:
                 {
-                    for (int i = 0; i < edgesToCheck3.Length; i++)
+                    for (int i = 0; i < edgesToCheck3.Length-1; i++)
                     {
                         int edgeIndex1 = -1;
                         int edgeIndex2 = -1;
@@ -508,6 +575,28 @@ public class CellManager : MonoBehaviour
                             }
                         }
                     }
+
+                    //Fix
+                    for (int i = 0; i < 4; i++)
+                    {
+                        TeamPlaceable tp1;
+                        if (edgesToCheck0[5].edges[i].gameObject == null)
+                        {
+                            tp1 = null;
+                        }
+                        else
+                        {
+                            tp1 = edgesToCheck0[5].edges[i].gameObject.GetComponent<TeamPlaceable>();
+                        }
+                        if (tp1 != null)
+                        {
+                            if (tp1.team == team)
+                            {
+                                times++;
+                            }
+                        }
+                    }
+                    //Fix
 
                     if (times == 2)
                     {
