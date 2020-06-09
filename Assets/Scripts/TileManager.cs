@@ -65,7 +65,7 @@ public class TileManager : MonoBehaviour
                 else
                 {
                     MeshRenderer renderer = spawned.GetComponent<MeshRenderer>();
-                    Tile tile = map.GetTileTypeFromCoords(z * gridX + x);
+                    Tile tile = map.GetTileTypeFromCoords(x,z);
                     switch (tile)
                     {
                         case Tile.Grass:

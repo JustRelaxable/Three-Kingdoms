@@ -8,9 +8,17 @@ public class MapSO : ScriptableObject
 {
     public CoordinateInformation[] coordinateInformations;
 
-    public Tile GetTileTypeFromCoords(int index)
+    public Tile GetTileTypeFromCoords(int x,int z)
     {
-        return coordinateInformations[index].tile;
+        for (int i = 0; i < coordinateInformations.Length; i++)
+        {
+            if(x == coordinateInformations[i].column && z == coordinateInformations[i].row)
+            {
+                return coordinateInformations[i].tile;
+            }
+        }
+        return Tile.Grass;
+
     }
 }
 
