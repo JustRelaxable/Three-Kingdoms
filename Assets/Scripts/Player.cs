@@ -15,10 +15,12 @@ public class Player : NetworkBehaviour
 
     public int dieAmount { get; private set; } = -1;
 
-    int foodResources = 20;
-    int stoneResources = 20;
-    int sulphurResources = 10;
-    int currency = 10;
+    public int foodResources = 20;
+    public int stoneResources = 20;
+    public int sulphurResources = 10;
+    public int currency = 10;
+    public int canonResources = 0;
+    public int wallsResources = 0;
 
     int foodMine = 0;
     int stoneMine = 0;
@@ -41,6 +43,10 @@ public class Player : NetworkBehaviour
         foodResources += (foodMine * 2);
         stoneResources += (stoneMine * 2);
         sulphurResources += (sulphurMine);
+
+        gameManager.FoodAmountPlayer.text = foodResources.ToString();
+        gameManager.StoneAmountPlayer.text = stoneResources.ToString();
+        gameManager.GunPowderAmountPlayer.text = sulphurResources.ToString();
     }
 
     public void RollDie()
@@ -55,13 +61,13 @@ public class Player : NetworkBehaviour
     public void RpcUpdateDieOnClients(int dieAmount)
     {
         this.dieAmount = dieAmount;
-        Debug.Log(dieAmount);
+        gameManager.ActionPoints.text = dieAmount.ToString();
     }
 
     public void DecreaseDie()
     {
         dieAmount -= 1;
-        if(dieAmount == 0)
+        if (dieAmount == 0)
         {
             gameManager.CmdTurnFinished(networkIdentity.netId.Value);
         }
@@ -69,10 +75,12 @@ public class Player : NetworkBehaviour
 
     public void PlaceWall()
     {
-        if(foodResources < 0)
+        if (foodResources < 0)
         {
             DecreaseDie();
             this.foodResources -= 1;
+            gameManager.FoodAmountPlayer.text = foodResources.ToString();
+            gameManager.ActionPoints.text = dieAmount.ToString();
         }
         else
         {
@@ -117,23 +125,26 @@ public class Player : NetworkBehaviour
 
     public void BuyResource(MarketResourceType resource)
     {
-        if(currency > 0)
+        if (currency > 0)
         {
             switch (resource)
             {
                 case MarketResourceType.Food:
                     currency -= 1;
                     foodResources += 1;
+                    gameManager.FoodAmountPlayer.text = foodResources.ToString();
                     market.CmdDecreaseMarket(MarketResourceType.Food);
                     break;
                 case MarketResourceType.Stone:
                     currency -= 1;
                     stoneResources += 1;
+                    gameManager.StoneAmountPlayer.text = stoneResources.ToString();
                     market.CmdDecreaseMarket(MarketResourceType.Stone);
                     break;
                 case MarketResourceType.Sulphur:
                     currency -= 1;
                     sulphurResources += 1;
+                    gameManager.GunPowderAmountPlayer.text = sulphurResources.ToString();
                     market.CmdDecreaseMarket(MarketResourceType.Sulphur);
                     break;
                 default:
@@ -147,11 +158,13 @@ public class Player : NetworkBehaviour
         switch (resource)
         {
             case MarketResourceType.Food:
-                if(foodResources > 0)
+                if (foodResources > 0)
                 {
                     currency += 1;
                     foodResources -= 1;
+                    gameManager.FoodAmountPlayer.text = foodResources.ToString();
                     market.CmdIncreaseMarket(MarketResourceType.Food);
+                    gameManager.FoodInMarket.text = market.food.ToString();
                 }
                 break;
             case MarketResourceType.Stone:
@@ -159,7 +172,9 @@ public class Player : NetworkBehaviour
                 {
                     currency += 1;
                     stoneResources -= 1;
+                    gameManager.StoneAmountPlayer.text = stoneResources.ToString();
                     market.CmdIncreaseMarket(MarketResourceType.Stone);
+                    gameManager.StoneInMarket.text = market.stone.ToString();
                 }
                 break;
             case MarketResourceType.Sulphur:
@@ -167,7 +182,9 @@ public class Player : NetworkBehaviour
                 {
                     currency += 1;
                     sulphurResources -= 1;
+                    gameManager.GunPowderAmountPlayer.text = sulphurResources.ToString();
                     market.CmdIncreaseMarket(MarketResourceType.Sulphur);
+                    gameManager.GunpowderInMarket.text = market.sulphur.ToString();
                 }
                 break;
             default:
@@ -178,5 +195,5 @@ public class Player : NetworkBehaviour
 
 public enum MarketResourceType
 {
-    Food,Stone,Sulphur
+    Food, Stone, Sulphur
 }

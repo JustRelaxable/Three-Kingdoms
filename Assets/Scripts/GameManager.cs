@@ -3,9 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class GameManager : NetworkBehaviour
 {
+    public Text FoodAmountPlayer;
+    public Text StoneAmountPlayer;
+    public Text GunPowderAmountPlayer;
+    public Text Canon;
+    public Text Walls;
+
+    public Text FoodInMarket;
+    public Text StoneInMarket;
+    public Text GunpowderInMarket;
+
+    public Text ActionPoints;
+
     [SerializeField]
     public GameObject currentPlayer { get; private set; }
     [SerializeField]
@@ -18,20 +31,21 @@ public class GameManager : NetworkBehaviour
     {
         turnConnectionID = uint.MinValue;
         //StartGameSession();
+
     }
 
     public void RegisterPlayer(GameObject player)
     {
         for (int i = 0; i < allPlayers.Length; i++)
         {
-            if(allPlayers[i] == null)
+            if (allPlayers[i] == null)
             {
                 allPlayers[i] = player;
                 break;
             }
         }
 
-        if(allPlayers[2] != null)
+        if (allPlayers[2] != null)
         {
             StartGameSession();
         }
@@ -41,7 +55,7 @@ public class GameManager : NetworkBehaviour
     {
         for (int i = 0; i < allPlayers.Length; i++)
         {
-            if(allPlayers[i].GetComponent<NetworkIdentity>().netId.Value == connectionID)
+            if (allPlayers[i].GetComponent<NetworkIdentity>().netId.Value == connectionID)
             {
                 return allPlayers[i];
             }
@@ -68,6 +82,7 @@ public class GameManager : NetworkBehaviour
         ThrowDiesForPlayers();
         PutAndSelectRandomConnectionID();
         AssignPlayerColors();
+        PlayerResourceAllocation();
     }
 
     private void ThrowDiesForPlayers()
@@ -93,7 +108,7 @@ public class GameManager : NetworkBehaviour
     {
         int index = connectionIDs.FindIndex(c => c == connectionID);
         index = index == 2 ? 0 : index + 1;
-        if(index == 0)
+        if (index == 0)
             ThrowDiesForPlayers();
         turnConnectionID = connectionIDs[index];
     }
@@ -106,10 +121,29 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void AssignColorToPlayer(uint connectionID,int colorIndex)
+    public void AssignColorToPlayer(uint connectionID, int colorIndex)
     {
         Player player = GetPlayerFromConnectionID(connectionID);
         player.RpcAssignColor(colorIndex);
         player.RpcPlayerAssignTeam(colorIndex);
+    }
+
+    public void PlayerResourceAllocation()
+    {
+        for (int i = 0; i < connectionIDs.Count; i++)
+        {
+            AllocateResourcesToPlayer(connectionIDs[i]);
+        }
+    }
+
+    public void AllocateResourcesToPlayer(uint connectionID)
+    {
+        Player player = GetPlayerFromConnectionID(connectionID);
+
+        FoodAmountPlayer.text = player.foodResources.ToString();
+        StoneAmountPlayer.text = player.stoneResources.ToString();
+        GunPowderAmountPlayer.text = player.sulphurResources.ToString();
+        Canon.text = player.canonResources.ToString();
+        Walls.text = player.wallsResources.ToString();
     }
 }
