@@ -5483,6 +5483,7 @@ MonoBehaviour:
   ActionPoints: {fileID: 484570251}
   PanelLoading: {fileID: 2102019154}
   InGameMarket: {fileID: 1666068778}
+  onGameStartSetReference: {fileID: 1668873651}
   allPlayers:
   - {fileID: 0}
   - {fileID: 0}

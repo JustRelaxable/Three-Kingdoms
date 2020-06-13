@@ -7,7 +7,7 @@ public class BuyingAndSellingUpdateUI : MonoBehaviour
     GameManager gameManager;
     Player player;
 
-    private void Start()
+    public void OnGameStart()
     {
         gameManager = FindObjectOfType<GameManager>();
         player = gameManager.currentPlayer.GetComponent<Player>();

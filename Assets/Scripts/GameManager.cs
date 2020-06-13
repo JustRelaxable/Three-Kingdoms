@@ -22,6 +22,8 @@ public class GameManager : NetworkBehaviour
     public GameObject PanelLoading;
     public GameObject InGameMarket;
 
+    public BuyingAndSellingUpdateUI onGameStartSetReference;
+
     [SerializeField]
     public GameObject currentPlayer { get; private set; }
     [SerializeField]
@@ -87,6 +89,7 @@ public class GameManager : NetworkBehaviour
         PutAndSelectRandomConnectionID();
         AssignPlayerColors();
         PlayerResourceAllocation();
+        onGameStartSetReference.OnGameStart();
     }
 
     private void ThrowDiesForPlayers()
