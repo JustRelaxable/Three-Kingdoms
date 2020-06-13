@@ -18,13 +18,13 @@ public class BuyingAndSellingUpdateUI : MonoBehaviour
         switch (resourceType)
         {
             case "Food":
-                player.BuyResource(global::MarketResourceType.Food);
+                player.BuyResource(MarketResourceType.Food);
                 break;
             case "Stone":
-                player.BuyResource(global::MarketResourceType.Stone);
+                player.BuyResource(MarketResourceType.Stone);
                 break;
             case "Sulphur":
-                player.BuyResource(global::MarketResourceType.Sulphur);
+                player.BuyResource(MarketResourceType.Sulphur);
                 break;
             default:
                 break;
@@ -38,13 +38,13 @@ public class BuyingAndSellingUpdateUI : MonoBehaviour
         switch (resourceType)
         {
             case "Food":
-                player.SellResource(global::MarketResourceType.Food);
+                player.SellResource(MarketResourceType.Food);
                 break;
             case "Stone":
-                player.SellResource(global::MarketResourceType.Stone);
+                player.SellResource(MarketResourceType.Stone);
                 break;
             case "Sulphur":
-                player.SellResource(global::MarketResourceType.Sulphur);
+                player.SellResource(MarketResourceType.Sulphur);
                 break;
             default:
                 break;
