@@ -18,6 +18,8 @@ public class GameManager : NetworkBehaviour
     public Text GunpowderInMarket;
 
     public Text ActionPoints;
+    public GameObject PanelLoading;
+    public GameObject InGameMarket;
 
     [SerializeField]
     public GameObject currentPlayer { get; private set; }
@@ -48,6 +50,7 @@ public class GameManager : NetworkBehaviour
         if (allPlayers[2] != null)
         {
             StartGameSession();
+            GameLoaded();
         }
     }
 
@@ -145,5 +148,11 @@ public class GameManager : NetworkBehaviour
         GunPowderAmountPlayer.text = player.sulphurResources.ToString();
         Canon.text = player.canonResources.ToString();
         Walls.text = player.wallsResources.ToString();
+    }
+
+    public void GameLoaded()
+    {
+        PanelLoading.SetActive(false);
+        InGameMarket.SetActive(true);
     }
 }
