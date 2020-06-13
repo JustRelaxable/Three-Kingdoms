@@ -12,6 +12,7 @@ public class GameManager : NetworkBehaviour
     public Text GunPowderAmountPlayer;
     public Text Canon;
     public Text Walls;
+    public Text Currency;
 
     public Text FoodInMarket;
     public Text StoneInMarket;

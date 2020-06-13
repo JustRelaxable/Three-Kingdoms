@@ -133,18 +133,21 @@ public class Player : NetworkBehaviour
                     currency -= 1;
                     foodResources += 1;
                     gameManager.FoodAmountPlayer.text = foodResources.ToString();
+                    gameManager.Currency.text = currency.ToString();
                     market.CmdDecreaseMarket(MarketResourceType.Food);
                     break;
                 case MarketResourceType.Stone:
                     currency -= 1;
                     stoneResources += 1;
                     gameManager.StoneAmountPlayer.text = stoneResources.ToString();
+                    gameManager.Currency.text = currency.ToString();
                     market.CmdDecreaseMarket(MarketResourceType.Stone);
                     break;
                 case MarketResourceType.Sulphur:
                     currency -= 1;
                     sulphurResources += 1;
                     gameManager.GunPowderAmountPlayer.text = sulphurResources.ToString();
+                    gameManager.Currency.text = currency.ToString();
                     market.CmdDecreaseMarket(MarketResourceType.Sulphur);
                     break;
                 default:
@@ -163,6 +166,7 @@ public class Player : NetworkBehaviour
                     currency += 1;
                     foodResources -= 1;
                     gameManager.FoodAmountPlayer.text = foodResources.ToString();
+                    gameManager.Currency.text = currency.ToString();
                     market.CmdIncreaseMarket(MarketResourceType.Food);
                     gameManager.FoodInMarket.text = market.food.ToString();
                 }
@@ -173,6 +177,7 @@ public class Player : NetworkBehaviour
                     currency += 1;
                     stoneResources -= 1;
                     gameManager.StoneAmountPlayer.text = stoneResources.ToString();
+                    gameManager.Currency.text = currency.ToString();
                     market.CmdIncreaseMarket(MarketResourceType.Stone);
                     gameManager.StoneInMarket.text = market.stone.ToString();
                 }
@@ -183,6 +188,7 @@ public class Player : NetworkBehaviour
                     currency += 1;
                     sulphurResources -= 1;
                     gameManager.GunPowderAmountPlayer.text = sulphurResources.ToString();
+                    gameManager.Currency.text = currency.ToString();
                     market.CmdIncreaseMarket(MarketResourceType.Sulphur);
                     gameManager.GunpowderInMarket.text = market.sulphur.ToString();
                 }
