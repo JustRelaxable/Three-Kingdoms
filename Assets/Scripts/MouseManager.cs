@@ -59,6 +59,7 @@ public class MouseManager : NetworkBehaviour
                     if(isPlaceable2 && isPlaceable)
                     {
                         player.PlaceWall();
+                        player.DecreaseDie();
                     }
 
                     Debug.Log(isPlaceable);
@@ -95,7 +96,10 @@ public class MouseManager : NetworkBehaviour
         }
         if (isPlaceable)
         {
-            player.PlaceWall();
+            if (player.buyingAndSellingUpdateUI != null)
+            {
+                player.PlaceWall();
+            }
             GameObject spawnedObject = Instantiate(wall, pos, rot);
             AssignWallColor(spawnedObject);
             AssignTeam(spawnedObject);
