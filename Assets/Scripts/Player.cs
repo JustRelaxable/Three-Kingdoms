@@ -6,7 +6,6 @@ using UnityEngine.Networking;
 [System.Serializable]
 public class Player : NetworkBehaviour
 {
-    public BuyingAndSellingUpdateUI buyingAndSellingUpdateUI;
     GameManager gameManager;
     NetworkIdentity networkIdentity;
     public Material playerColor;
@@ -30,7 +29,6 @@ public class Player : NetworkBehaviour
     private void Awake()
     {
         gameManager = GameObject.FindObjectOfType<GameManager>();
-
         networkIdentity = GetComponent<NetworkIdentity>();
         market = GameObject.FindObjectOfType<Market>();
     }
@@ -46,9 +44,9 @@ public class Player : NetworkBehaviour
         stoneResources += (stoneMine * 2);
         sulphurResources += (sulphurMine);
 
-        buyingAndSellingUpdateUI.FoodAmountPlayer.text = foodResources.ToString();
-        buyingAndSellingUpdateUI.StoneAmountPlayer.text = stoneResources.ToString();
-        buyingAndSellingUpdateUI.GunPowderAmountPlayer.text = sulphurResources.ToString();
+        gameManager.FoodAmountPlayer.text = foodResources.ToString();
+        gameManager.StoneAmountPlayer.text = stoneResources.ToString();
+        gameManager.GunPowderAmountPlayer.text = sulphurResources.ToString();
     }
 
     public void RollDie()
@@ -56,24 +54,19 @@ public class Player : NetworkBehaviour
         int random1 = Random.Range(1, 4);
         int random2 = Random.Range(1, 4);
         dieAmount = (random1 + random2);
-        //RpcUpdateDieOnClients(dieAmount);
+        RpcUpdateDieOnClients(dieAmount);
     }
 
     [ClientRpc]
     public void RpcUpdateDieOnClients(int dieAmount)
     {
         this.dieAmount = dieAmount;
-        if(buyingAndSellingUpdateUI == null)
-        {
-            return;
-        }
-        buyingAndSellingUpdateUI.ActionPoints.text = dieAmount.ToString();
+        gameManager.ActionPoints.text = dieAmount.ToString();
     }
 
     public void DecreaseDie()
     {
         dieAmount -= 1;
-        this.foodResources -= 1;
         if (dieAmount == 0)
         {
             gameManager.CmdTurnFinished(networkIdentity.netId.Value);
@@ -82,10 +75,12 @@ public class Player : NetworkBehaviour
 
     public void PlaceWall()
     {
-        if (foodResources > 0)
+        if (foodResources < 0)
         {
-            buyingAndSellingUpdateUI.FoodAmountPlayer.text = foodResources.ToString();
-            buyingAndSellingUpdateUI.ActionPoints.text = dieAmount.ToString();
+            DecreaseDie();
+            this.foodResources -= 1;
+            gameManager.FoodAmountPlayer.text = foodResources.ToString();
+            gameManager.ActionPoints.text = dieAmount.ToString();
         }
         else
         {
@@ -137,22 +132,22 @@ public class Player : NetworkBehaviour
                 case MarketResourceType.Food:
                     currency -= 1;
                     foodResources += 1;
-                    buyingAndSellingUpdateUI.FoodAmountPlayer.text = foodResources.ToString();
-                    buyingAndSellingUpdateUI.Currency.text = currency.ToString();
+                    gameManager.FoodAmountPlayer.text = foodResources.ToString();
+                    gameManager.Currency.text = currency.ToString();
                     market.CmdDecreaseMarket(MarketResourceType.Food);
                     break;
                 case MarketResourceType.Stone:
                     currency -= 1;
                     stoneResources += 1;
-                    buyingAndSellingUpdateUI.StoneAmountPlayer.text = stoneResources.ToString();
-                    buyingAndSellingUpdateUI.Currency.text = currency.ToString();
+                    gameManager.StoneAmountPlayer.text = stoneResources.ToString();
+                    gameManager.Currency.text = currency.ToString();
                     market.CmdDecreaseMarket(MarketResourceType.Stone);
                     break;
                 case MarketResourceType.Sulphur:
                     currency -= 1;
                     sulphurResources += 1;
-                    buyingAndSellingUpdateUI.GunPowderAmountPlayer.text = sulphurResources.ToString();
-                    buyingAndSellingUpdateUI.Currency.text = currency.ToString();
+                    gameManager.GunPowderAmountPlayer.text = sulphurResources.ToString();
+                    gameManager.Currency.text = currency.ToString();
                     market.CmdDecreaseMarket(MarketResourceType.Sulphur);
                     break;
                 default:
@@ -170,10 +165,10 @@ public class Player : NetworkBehaviour
                 {
                     currency += 1;
                     foodResources -= 1;
-                    buyingAndSellingUpdateUI.FoodAmountPlayer.text = foodResources.ToString();
-                    buyingAndSellingUpdateUI.Currency.text = currency.ToString();
+                    gameManager.FoodAmountPlayer.text = foodResources.ToString();
+                    gameManager.Currency.text = currency.ToString();
                     market.CmdIncreaseMarket(MarketResourceType.Food);
-                    buyingAndSellingUpdateUI.FoodInMarket.text = market.food.ToString();
+                    gameManager.FoodInMarket.text = market.food.ToString();
                 }
                 break;
             case MarketResourceType.Stone:
@@ -181,10 +176,10 @@ public class Player : NetworkBehaviour
                 {
                     currency += 1;
                     stoneResources -= 1;
-                    buyingAndSellingUpdateUI.StoneAmountPlayer.text = stoneResources.ToString();
-                    buyingAndSellingUpdateUI.Currency.text = currency.ToString();
+                    gameManager.StoneAmountPlayer.text = stoneResources.ToString();
+                    gameManager.Currency.text = currency.ToString();
                     market.CmdIncreaseMarket(MarketResourceType.Stone);
-                    buyingAndSellingUpdateUI.StoneInMarket.text = market.stone.ToString();
+                    gameManager.StoneInMarket.text = market.stone.ToString();
                 }
                 break;
             case MarketResourceType.Sulphur:
@@ -192,41 +187,15 @@ public class Player : NetworkBehaviour
                 {
                     currency += 1;
                     sulphurResources -= 1;
-                    buyingAndSellingUpdateUI.GunPowderAmountPlayer.text = sulphurResources.ToString();
-                    buyingAndSellingUpdateUI.Currency.text = currency.ToString();
+                    gameManager.GunPowderAmountPlayer.text = sulphurResources.ToString();
+                    gameManager.Currency.text = currency.ToString();
                     market.CmdIncreaseMarket(MarketResourceType.Sulphur);
-                    buyingAndSellingUpdateUI.GunpowderInMarket.text = market.sulphur.ToString();
+                    gameManager.GunpowderInMarket.text = market.sulphur.ToString();
                 }
                 break;
             default:
                 break;
         }
-    }
-
-    [ClientRpc]
-    public void RpcUpdateUI()
-    {
-        if (buyingAndSellingUpdateUI == null)
-        {
-            return;
-        }
-        buyingAndSellingUpdateUI.AllocateResourcesToPlayer();
-    }
-
-    [ClientRpc]
-    public void RpcChangeWaitingToInGamePanel()
-    {
-        if (buyingAndSellingUpdateUI == null)
-        {
-            return;
-        }
-        buyingAndSellingUpdateUI.GameLoaded();
-    }
-
-    public void AssignPlayerToTheBuyUI()
-    {
-        buyingAndSellingUpdateUI = GameObject.FindObjectOfType<BuyingAndSellingUpdateUI>();
-        buyingAndSellingUpdateUI.AssignPlayer(this);
     }
 }
 

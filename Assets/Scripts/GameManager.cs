@@ -7,8 +7,20 @@ using UnityEngine.UI;
 
 public class GameManager : NetworkBehaviour
 {
+    public Text FoodAmountPlayer;
+    public Text StoneAmountPlayer;
+    public Text GunPowderAmountPlayer;
+    public Text Canon;
+    public Text Walls;
+    public Text Currency;
 
-    
+    public Text FoodInMarket;
+    public Text StoneInMarket;
+    public Text GunpowderInMarket;
+
+    public Text ActionPoints;
+    public GameObject PanelLoading;
+    public GameObject InGameMarket;
 
     public BuyingAndSellingUpdateUI onGameStartSetReference;
 
@@ -45,15 +57,6 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    private void GameLoaded()
-    {
-        for (int i = 0; i < connectionIDs.Count; i++)
-        {
-            Player player = GetPlayerFromConnectionID(connectionIDs[i]);
-            player.RpcChangeWaitingToInGamePanel();
-        }
-    }
-
     public GameObject GetPlayerGOFromConnectionID(uint connectionID)
     {
         for (int i = 0; i < allPlayers.Length; i++)
@@ -82,31 +85,19 @@ public class GameManager : NetworkBehaviour
 
     private void StartGameSession()
     {
-        //StartCoroutine(StartGameSes());
         ThrowDiesForPlayers();
         PutAndSelectRandomConnectionID();
         AssignPlayerColors();
         PlayerResourceAllocation();
         onGameStartSetReference.OnGameStart();
     }
-    /*
-    IEnumerator StartGameSes()
-    {
-        yield return new WaitForSeconds(1);
-        ThrowDiesForPlayers();
-        PutAndSelectRandomConnectionID();
-        AssignPlayerColors();
-        PlayerResourceAllocation();
-    }*/
 
     private void ThrowDiesForPlayers()
     {
         for (int i = 0; i < allPlayers.Length; i++)
         {
-            Player player = allPlayers[i].GetComponent<Player>();
-            player.RollDie();
-            Debug.Log(player.dieAmount);
-            player.RpcUpdateDieOnClients(player.dieAmount);
+            allPlayers[i].GetComponent<Player>().RollDie();
+            Debug.Log(allPlayers[i].GetComponent<Player>().dieAmount);
         }
     }
 
@@ -148,12 +139,24 @@ public class GameManager : NetworkBehaviour
     {
         for (int i = 0; i < connectionIDs.Count; i++)
         {
-            Player player = GetPlayerFromConnectionID(connectionIDs[i]);
-            player.RpcUpdateUI();
+            AllocateResourcesToPlayer(connectionIDs[i]);
         }
     }
 
+    public void AllocateResourcesToPlayer(uint connectionID)
+    {
+        Player player = GetPlayerFromConnectionID(connectionID);
 
+        FoodAmountPlayer.text = player.foodResources.ToString();
+        StoneAmountPlayer.text = player.stoneResources.ToString();
+        GunPowderAmountPlayer.text = player.sulphurResources.ToString();
+        Canon.text = player.canonResources.ToString();
+        Walls.text = player.wallsResources.ToString();
+    }
 
-
+    public void GameLoaded()
+    {
+        PanelLoading.SetActive(false);
+        InGameMarket.SetActive(true);
+    }
 }

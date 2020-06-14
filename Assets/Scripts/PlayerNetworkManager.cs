@@ -19,12 +19,6 @@ public class PlayerNetworkManager : NetworkBehaviour
             }
             
         }
-
-        if (isLocalPlayer)
-        {
-            GetComponent<Player>().AssignPlayerToTheBuyUI();
-        }
-
         if (isServer)
         {
             RegisterPlayer();
