@@ -24,7 +24,7 @@ public class BuyingAndSellingUpdateUI : NetworkBehaviour
     GameManager gameManager;
     Player player;
 
-    private void Start()
+    public void OnGameStart()
     {
         gameManager = FindObjectOfType<GameManager>();
     }

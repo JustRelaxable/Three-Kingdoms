@@ -10,6 +10,8 @@ public class GameManager : NetworkBehaviour
 
     
 
+    public BuyingAndSellingUpdateUI onGameStartSetReference;
+
     [SerializeField]
     public GameObject currentPlayer { get; private set; }
     [SerializeField]
@@ -85,6 +87,7 @@ public class GameManager : NetworkBehaviour
         PutAndSelectRandomConnectionID();
         AssignPlayerColors();
         PlayerResourceAllocation();
+        onGameStartSetReference.OnGameStart();
     }
     /*
     IEnumerator StartGameSes()
