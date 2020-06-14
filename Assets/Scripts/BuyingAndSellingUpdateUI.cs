@@ -1,16 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UI;
 
-public class BuyingAndSellingUpdateUI : MonoBehaviour
+public class BuyingAndSellingUpdateUI : NetworkBehaviour
 {
+    public Text FoodAmountPlayer;
+    public Text StoneAmountPlayer;
+    public Text GunPowderAmountPlayer;
+    public Text Canon;
+    public Text Walls;
+    public Text Currency;
+    public Text FoodInMarket;
+    public Text StoneInMarket;
+    public Text GunpowderInMarket;
+    public Text ActionPoints;
+
+    public GameObject PanelLoading;
+    public GameObject InGameMarket;
+
+
     GameManager gameManager;
     Player player;
 
     public void OnGameStart()
     {
         gameManager = FindObjectOfType<GameManager>();
-        player = gameManager.currentPlayer.GetComponent<Player>();
     }
 
     public void BuyResource(string resourceType)
@@ -18,13 +34,13 @@ public class BuyingAndSellingUpdateUI : MonoBehaviour
         switch (resourceType)
         {
             case "Food":
-                player.BuyResource(global::MarketResourceType.Food);
+                player.BuyResource(MarketResourceType.Food);
                 break;
             case "Stone":
-                player.BuyResource(global::MarketResourceType.Stone);
+                player.BuyResource(MarketResourceType.Stone);
                 break;
             case "Sulphur":
-                player.BuyResource(global::MarketResourceType.Sulphur);
+                player.BuyResource(MarketResourceType.Sulphur);
                 break;
             default:
                 break;
@@ -38,16 +54,37 @@ public class BuyingAndSellingUpdateUI : MonoBehaviour
         switch (resourceType)
         {
             case "Food":
-                player.SellResource(global::MarketResourceType.Food);
+                player.SellResource(MarketResourceType.Food);
                 break;
             case "Stone":
-                player.SellResource(global::MarketResourceType.Stone);
+                player.SellResource(MarketResourceType.Stone);
                 break;
             case "Sulphur":
-                player.SellResource(global::MarketResourceType.Sulphur);
+                player.SellResource(MarketResourceType.Sulphur);
                 break;
             default:
                 break;
         }
+    }
+
+    public void AllocateResourcesToPlayer()
+    {
+        FoodAmountPlayer.text = player.foodResources.ToString();
+        StoneAmountPlayer.text = player.stoneResources.ToString();
+        GunPowderAmountPlayer.text = player.sulphurResources.ToString();
+        Canon.text = player.canonResources.ToString();
+        Walls.text = player.wallsResources.ToString();
+        ActionPoints.text = player.dieAmount.ToString();
+    }
+
+    public void AssignPlayer(Player player)
+    {
+        this.player = player;
+    }
+
+    public void GameLoaded()
+    {
+        PanelLoading.SetActive(false);
+        InGameMarket.SetActive(true);
     }
 }

@@ -5471,18 +5471,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9c4b4d62972b304eb578d44670a2c60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FoodAmountPlayer: {fileID: 508037303}
-  StoneAmountPlayer: {fileID: 1295975902}
-  GunPowderAmountPlayer: {fileID: 466405892}
-  Canon: {fileID: 1009148551}
-  Walls: {fileID: 2022042198}
-  Currency: {fileID: 0}
-  FoodInMarket: {fileID: 1973726912}
-  StoneInMarket: {fileID: 589120809}
-  GunpowderInMarket: {fileID: 2061791145}
-  ActionPoints: {fileID: 484570251}
-  PanelLoading: {fileID: 2102019154}
-  InGameMarket: {fileID: 1666068778}
   allPlayers:
   - {fileID: 0}
   - {fileID: 0}
@@ -39046,7 +39034,7 @@ MeshCollider:
   m_GameObject: {fileID: 1290867325}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Convex: 0
   m_CookingOptions: 14
@@ -46079,7 +46067,7 @@ MeshCollider:
   m_GameObject: {fileID: 1455951777}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Convex: 0
   m_CookingOptions: 14
@@ -50618,7 +50606,7 @@ MeshCollider:
   m_GameObject: {fileID: 1570765282}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Convex: 0
   m_CookingOptions: 14
@@ -52958,6 +52946,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e90c54ed845c41646b4ce95e2de43831, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FoodAmountPlayer: {fileID: 508037303}
+  StoneAmountPlayer: {fileID: 1295975902}
+  GunPowderAmountPlayer: {fileID: 466405892}
+  Canon: {fileID: 1009148551}
+  Walls: {fileID: 2022042198}
+  Currency: {fileID: 2107815520}
+  FoodInMarket: {fileID: 1501307493}
+  StoneInMarket: {fileID: 544370827}
+  GunpowderInMarket: {fileID: 999032102}
+  ActionPoints: {fileID: 484570251}
+  PanelLoading: {fileID: 2102019154}
+  InGameMarket: {fileID: 1666068778}
 --- !u!114 &1668873652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52990,7 +52990,7 @@ MonoBehaviour:
     i14: 0
     i15: 0
   m_ServerOnly: 0
-  m_LocalPlayerAuthority: 0
+  m_LocalPlayerAuthority: 1
 --- !u!4 &1668873653
 Transform:
   m_ObjectHideFlags: 0
